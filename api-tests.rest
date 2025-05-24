@@ -1,0 +1,49 @@
+### 1. Registrar un nuevo usuario (Signup)
+POST http://localhost:4000/signup
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "test123"
+}
+
+### 2. Iniciar sesión (Login) - Obtener JWT
+POST http://localhost:4000/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "test123"
+}
+
+### 3. Obtener todos los items (requiere JWT)
+GET http://localhost:4000/items
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUMTAzU3pxRXdlbjNFVzNDRzdNZyIsImlhdCI6MTc0NzQwMjEwMSwiZXhwIjoxNzQ3NDA1NzAxfQ.n554xnlPsvNXBz6PxK3mgac61vztWkSrZJlKNF0cs5w
+
+### 4. Crear un nuevo item (requiere JWT)
+POST http://localhost:4000/items
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUMTAzU3pxRXdlbjNFVzNDRzdNZyIsImlhdCI6MTc0NzQwMjEwMSwiZXhwIjoxNzQ3NDA1NzAxfQ.n554xnlPsvNXBz6PxK3mgac61vztWkSrZJlKNF0cs5w
+
+{
+  "name": "Item de prueba",
+  "price": 19.99
+}
+
+### 5. Obtener un item específico (requiere JWT)
+GET http://localhost:4000/items/7Q7kVvHS2pv1q2AiMRlG
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUMTAzU3pxRXdlbjNFVzNDRzdNZyIsImlhdCI6MTc0NzQwMjEwMSwiZXhwIjoxNzQ3NDA1NzAxfQ.n554xnlPsvNXBz6PxK3mgac61vztWkSrZJlKNF0cs5w
+
+### 6. Actualizar un item (requiere JWT)
+PUT http://localhost:4000/items/7Q7kVvHS2pv1q2AiMRlG
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUMTAzU3pxRXdlbjNFVzNDRzdNZyIsImlhdCI6MTc0NzQwMjEwMSwiZXhwIjoxNzQ3NDA1NzAxfQ.n554xnlPsvNXBz6PxK3mgac61vztWkSrZJlKNF0cs5w
+
+{
+  "name": "Item actualizado",
+  "price": 29.99
+}
+
+### 7. Eliminar un item (requiere JWT)
+DELETE http://localhost:4000/items/7Q7kVvHS2pv1q2AiMRlG
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJUMTAzU3pxRXdlbjNFVzNDRzdNZyIsImlhdCI6MTc0NzQwMjEwMSwiZXhwIjoxNzQ3NDA1NzAxfQ.n554xnlPsvNXBz6PxK3mgac61vztWkSrZJlKNF0cs5w
