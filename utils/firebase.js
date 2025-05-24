@@ -1,38 +1,42 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 let db;
 
 try {
-  console.log("Trying to read Firebase service account file...");
-  
-  // Try to read from the file
-  const serviceAccountPath = join(process.cwd(), 'firebase-service-account.json');
-  console.log("Service account path:", serviceAccountPath);
-  
-  const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
-  console.log("Service account loaded successfully");
-  
-  console.log("Firebase service account check:", {
-    hasType: !!serviceAccount.type,
-    hasProjectId: !!serviceAccount.project_id,
-    hasPrivateKey: !!serviceAccount.private_key?.includes("BEGIN PRIVATE KEY"),
-    hasClientEmail: !!serviceAccount.client_email
-  });
-  
-  // Initialize Firebase
-  initializeApp({
-    credential: cert(serviceAccount)
-  });
-  
-  console.log("Firebase initialized successfully");
-  db = getFirestore();
-  
+    console.log("Initializing Firebase with environment variables...");
+    
+    // Crear el service account desde variables de entorno
+    const serviceAccount = {
+        type: "service_account",
+        project_id: process.env.FIREBASE_PROJECT_ID,
+        private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+        private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+        client_id: process.env.FIREBASE_CLIENT_ID,
+        auth_uri: "https://accounts.google.com/o/oauth2/auth",
+        token_uri: "https://oauth2.googleapis.com/token",
+        auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+        client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${process.env.FIREBASE_CLIENT_EMAIL}`
+    };
+
+    console.log("Environment variables check:", {
+        hasProjectId: !!process.env.FIREBASE_PROJECT_ID,
+        hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
+        hasClientEmail: !!process.env.FIREBASE_CLIENT_EMAIL
+    });
+
+    // Initialize Firebase
+    initializeApp({
+        credential: cert(serviceAccount)
+    });
+    
+    console.log("Firebase initialized successfully");
+    db = getFirestore();
+    console.log("Firestore connected successfully");
+    
 } catch (error) {
-  console.error("Error initializing Firebase:", error);
-  // Continue without Firebase
+    console.error("❌ Error initializing Firebase:", error);
 }
 
 export default db;
