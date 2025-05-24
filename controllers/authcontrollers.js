@@ -15,26 +15,53 @@ const verifyPassword = (inputPassword, storedPassword) => {
 };
 
 export const signup = async (req, res) => {
-    const { username, password } = req.body;
-
+    console.log("=== SIGNUP REQUEST START ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    
+    const { name, username, password } = req.body;
+    
+    console.log("Extracted values:");
+    console.log("- name:", name);
+    console.log("- username:", username); 
+    console.log("- password:", password ? "[PROVIDED]" : "[MISSING]");
+    
     if (!username || !password) {
+        console.log("ERROR: Missing required fields");
         return res.status(400).json({ error: "Usuario y contraseña requeridos" });
     }
-
-    const hashedPassword = generateHash(password);
     
     try {
+        console.log("Starting password hash...");
+        const hashedPassword = generateHash(password);
+        console.log("Password hashed successfully");
+        
+        console.log("Connecting to Firebase...");
+        console.log("DB object:", typeof db);
+        
         const userRef = db.collection('users').doc();
+        console.log("UserRef created:", userRef.id);
+        
+        console.log("Attempting to save user data...");
         await userRef.set({
+            name: name || username,
             username,
             password: hashedPassword,
             createdAt: new Date()
         });
         
+        console.log("✅ User saved successfully!");
         res.status(201).json({ message: "Usuario registrado correctamente" });
+        
     } catch (error) {
+        console.log("❌ DETAILED ERROR:");
+        console.log("Error message:", error.message);
+        console.log("Error stack:", error.stack);
+        console.log("Error code:", error.code);
+        
         res.status(500).json({ error: "Error al registrar usuario" });
     }
+    
+    console.log("=== SIGNUP REQUEST END ===");
 };
 
 export const login = async (req, res) => {
